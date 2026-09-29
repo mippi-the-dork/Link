@@ -1,0 +1,23 @@
+{
+  "FileVersion": 3,
+  "Version": 2,
+  "VersionName": "0.1.1",
+  "FriendlyName": "Link",
+  "Description": "Synchronizes relative camera movement between Level Editor viewports with independent position and rotation axis controls.",
+  "Category": "Editor",
+  "CreatedBy": "Mippi the Dork",
+  "CanContainContent": false,
+  "IsBetaVersion": true,
+  "IsExperimentalVersion": true,
+  "Installed": false,
+  "Modules": [
+    {
+      "Name": "Link",
+      "Type": "Editor",
+      "LoadingPhase": "PostEngineInit",
+      "PlatformAllowList": [
+        "Win64"
+      ]
+    }
+  ]
+}
