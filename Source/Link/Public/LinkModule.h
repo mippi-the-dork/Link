@@ -20,7 +20,7 @@ public:
 private:
     void RegisterMenus();
     TSharedRef<SWidget> MakeToolbarWidget(const FToolMenuContext& Context);
-    TSharedRef<SWidget> BuildLinkMenu(TWeakPtr<SLevelViewport> WeakViewport);
+    TSharedRef<SWidget> BuildSettingsPopup(TWeakPtr<SLevelViewport> WeakViewport);
 
     bool TickLink(float DeltaTime);
     void RegisterViewport(const TSharedPtr<SLevelViewport>& Viewport);
@@ -31,14 +31,15 @@ private:
     void ToggleEnabled();
     void ToggleSource(FName ViewportKey);
     void ToggleTarget(FName ViewportKey);
+    void SetAbsoluteMode(bool bInAbsoluteMode);
+    void SyncTargets();
+    bool CanSyncTargets() const;
     void ClearLinkSetup();
     void ResetSourceSample();
 
     bool CanUseAsTarget(FName ViewportKey) const;
     bool IsSource(FName ViewportKey) const;
     bool IsTarget(FName ViewportKey) const;
-    FText GetToolbarLabel(FName ViewportKey) const;
-    FText GetToolbarTooltip(FName ViewportKey) const;
 
 private:
     TMap<FName, TWeakPtr<SLevelViewport>> RegisteredViewports;
@@ -52,6 +53,7 @@ private:
     bool bLinkPitch = false;
     bool bLinkYaw = false;
     bool bLinkRoll = false;
+    bool bAbsoluteMode = false;
 
     bool bHasPreviousSourceSample = false;
     bool bApplyingLinkedUpdate = false;

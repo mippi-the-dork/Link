@@ -1,9 +1,9 @@
 {
   "FileVersion": 3,
-  "Version": 2,
-  "VersionName": "0.1.1",
+  "Version": 4,
+  "VersionName": "0.2.2",
   "FriendlyName": "Link",
-  "Description": "Synchronizes relative camera movement between Level Editor viewports with independent position and rotation axis controls.",
+  "Description": "Synchronizes Level Editor viewport cameras with one-shot sync, relative or absolute linking, and independent position and rotation axis controls.",
   "Category": "Editor",
   "CreatedBy": "Mippi the Dork",
   "CanContainContent": false,
