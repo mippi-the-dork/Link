@@ -1,23 +1,27 @@
 {
-  "FileVersion": 3,
-  "Version": 9,
-  "VersionName": "0.3.4",
-  "FriendlyName": "Link",
-  "Description": "Synchronizes Level Editor viewport cameras with one-shot sync, relative or absolute linking, and independent position and rotation axis controls.",
-  "Category": "Editor",
-  "CreatedBy": "Mippi the Dork",
-  "CanContainContent": false,
-  "IsBetaVersion": true,
-  "IsExperimentalVersion": true,
-  "Installed": false,
-  "Modules": [
-    {
-      "Name": "Link",
-      "Type": "Editor",
-      "LoadingPhase": "PostEngineInit",
-      "PlatformAllowList": [
-        "Win64"
-      ]
-    }
-  ]
+	"FileVersion": 3,
+	"Version": 9,
+	"VersionName": "1.0.0",
+	"FriendlyName": "Link",
+	"Description": "Synchronizes Level Editor viewport cameras with one-shot sync, relative or absolute linking, and independent position and rotation axis controls.",
+	"Category": "Editor",
+	"CreatedBy": "Mippithedork",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "Link",
+			"Type": "Editor",
+			"LoadingPhase": "PostEngineInit",
+			"PlatformAllowList": [
+				"Win64"
+			]
+		}
+	],
+	"CreatedByURL": "https://github.com/mippi-the-dork",
+	"DocsURL": "https://github.com/mippi-the-dork/Link",
+	"MarketplaceURL": "",
+	"SupportURL": "https://github.com/mippi-the-dork/Link/issues"
 }
