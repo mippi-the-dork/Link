@@ -12,6 +12,7 @@ Use **Relative** mode to preserve existing camera offsets, **Absolute** mode to 
 ![Version](https://img.shields.io/badge/Version-1.0.0-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
+<!--
 > [!IMPORTANT]
 > **ATTENTION - README AUTHOR**
 >
@@ -42,7 +43,7 @@ Use **Relative** mode to preserve existing camera offsets, **Absolute** mode to 
 > ```markdown
 > ![Link synchronizing multiple Unreal Engine Level Editor viewports](Doc/Images/Link-Hero.png)
 > ```
-
+-->
 ---
 
 ## What is Link?
@@ -162,7 +163,7 @@ Link controls live directly in Unreal Engine's Level Editor viewport toolbar.
 Link does not add runtime Actors, Components, gameplay systems, or packaged-game dependencies.
 
 ---
-
+<!--
 > [!IMPORTANT]
 > **ATTENTION - README AUTHOR**
 >
@@ -195,7 +196,7 @@ Link does not add runtime Actors, Components, gameplay systems, or packaged-game
 > ```markdown
 > ![Multiple Unreal Engine viewports moving together with Link](Doc/Images/Link-Relative.gif)
 > ```
-
+-->
 ---
 
 # Using Link
@@ -279,7 +280,7 @@ Front             Target
 If the current Source is changed into a Target, its Source role is cleared.
 
 A viewport can never hold both roles simultaneously.
-
+<!--
 > [!IMPORTANT]
 > **ATTENTION - README AUTHOR**
 >
@@ -308,7 +309,7 @@ A viewport can never hold both roles simultaneously.
 > ```markdown
 > ![Link viewport toolbar controls](Doc/Images/Link-Controls.png)
 > ```
-
+-->
 ---
 
 # Enabling Link
@@ -510,7 +511,7 @@ does not immediately move a Target.
 The selected mode determines how Link responds the next time the Source camera moves.
 
 Use **Sync** when you want an immediate alignment.
-
+<!--
 > [!IMPORTANT]
 > **ATTENTION - README AUTHOR**
 >
@@ -539,7 +540,7 @@ Use **Sync** when you want an immediate alignment.
 > ```markdown
 > ![Relative and Absolute viewport synchronization with Link](Doc/Images/Link-Relative-Absolute.gif)
 > ```
-
+-->
 ---
 
 # Sync
@@ -688,7 +689,7 @@ Absolute
 ### Clear
 
 Resets the current Link setup.
-
+<!--
 > [!IMPORTANT]
 > **ATTENTION - README AUTHOR**
 >
@@ -714,7 +715,7 @@ Resets the current Link setup.
 > ```markdown
 > ![Link viewport synchronization settings](Doc/Images/Link-Settings.png)
 > ```
-
+-->
 ---
 
 # Clear
@@ -782,7 +783,7 @@ This prevents Link from fighting the fixed projection orientation of an Orthogra
 Link does not currently synchronize Orthographic zoom.
 
 Only position is synchronized for Orthographic Targets.
-
+<!--
 > [!IMPORTANT]
 > **ATTENTION - README AUTHOR**
 >
@@ -811,7 +812,7 @@ Only position is synchronized for Orthographic Targets.
 > ```markdown
 > ![Perspective and Orthographic viewports synchronized with Link](Doc/Images/Link-Orthographic.gif)
 > ```
-
+-->
 ---
 
 # Locked Viewports
