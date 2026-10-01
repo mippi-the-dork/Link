@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Mippithedork 2026, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -9,7 +9,9 @@
 class FLevelEditorViewportClient;
 class SLevelViewport;
 class SWidget;
-struct FToolMenuContext;
+class UToolMenu;
+class FSlateStyleSet;
+struct FToolMenuSection;
 
 class FLinkModule : public IModuleInterface
 {
@@ -18,9 +20,12 @@ public:
     virtual void ShutdownModule() override;
 
 private:
+    void RegisterStyle();
+    void UnregisterStyle();
     void RegisterMenus();
-    TSharedRef<SWidget> MakeToolbarWidget(const FToolMenuContext& Context);
-    TSharedRef<SWidget> BuildSettingsPopup(TWeakPtr<SLevelViewport> WeakViewport);
+    void BuildToolbarEntries(FToolMenuSection& Section);
+    TSharedRef<SWidget> MakeRoleWidget(FName ViewportKey);
+    void PopulateSettingsMenu(UToolMenu* Menu);
 
     bool TickLink(float DeltaTime);
     void RegisterViewport(const TSharedPtr<SLevelViewport>& Viewport);
@@ -61,4 +66,5 @@ private:
     FRotator PreviousSourceRotation = FRotator::ZeroRotator;
 
     FTSTicker::FDelegateHandle TickerHandle;
+    TSharedPtr<FSlateStyleSet> StyleSet;
 };

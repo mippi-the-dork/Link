@@ -1,7 +1,7 @@
 {
   "FileVersion": 3,
-  "Version": 4,
-  "VersionName": "0.2.2",
+  "Version": 9,
+  "VersionName": "0.3.4",
   "FriendlyName": "Link",
   "Description": "Synchronizes Level Editor viewport cameras with one-shot sync, relative or absolute linking, and independent position and rotation axis controls.",
   "Category": "Editor",

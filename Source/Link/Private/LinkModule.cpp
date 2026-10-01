@@ -1,71 +1,100 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Mippithedork 2026, Inc. All Rights Reserved.
 
 #include "LinkModule.h"
 
 #include "Editor.h"
 #include "Editor/UnrealEdTypes.h"
-#include "LevelEditorMenuContext.h"
 #include "LevelEditorViewport.h"
+#include "Interfaces/IPluginManager.h"
 #include "SLevelViewport.h"
 #include "Styling/AppStyle.h"
+#include "Styling/SlateStyle.h"
+#include "Styling/SlateStyleRegistry.h"
+#include "Styling/SegmentedControlStyle.h"
+#include "Styling/StyleDefaults.h"
 #include "ToolMenus.h"
+#include "ViewportToolbar/UnrealEdViewportToolbarContext.h"
+#include "Brushes/SlateImageBrush.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Input/SCheckBox.h"
-#include "Widgets/Input/SComboButton.h"
+#include "Widgets/Input/SSegmentedControl.h"
 #include "Widgets/Layout/SBorder.h"
 #include "Widgets/Layout/SBox.h"
+#include "Widgets/Layout/SScaleBox.h"
+#include "Widgets/Layout/SUniformGridPanel.h"
 #include "Widgets/SBoxPanel.h"
-#include "Widgets/SNullWidget.h"
 #include "Widgets/Text/STextBlock.h"
-#include "Styling/StyleColors.h"
-#include "Widgets/Layout/SSeparator.h"
 
 #define LOCTEXT_NAMESPACE "Link"
 
 namespace LinkUI
 {
-    constexpr float ToolbarButtonHeight = 24.0f;
-    constexpr float ToolbarGap = 2.0f;
-    constexpr float ToolbarButtonPaddingX = 7.0f;
-    constexpr float RoleColumnWidth = 18.0f;
-    constexpr float SegmentHeight = 24.0f;
-    constexpr float PopupWidth = 316.0f;
-    constexpr float SegmentWidthShort = 86.0f;
-    constexpr float SegmentWidthLong = 112.0f;
+    constexpr float RoleVisualSize = 9.0f;
+    constexpr float RoleColumnWidth = 14.0f;
+    constexpr float SettingsRowWidth = 244.0f;
+    constexpr float SettingsContentHorizontalPadding = 8.0f;
+    constexpr float RoleButtonGap = 2.0f;
 
-    const FCheckBoxStyle* ToggleStyle()
+    const FName StyleSetName(TEXT("LinkStyle"));
+
+    enum class ELinkMode : uint8
     {
-        return &FAppStyle::Get().GetWidgetStyle<FCheckBoxStyle>(TEXT("ToggleButtonCheckbox"));
-    }
+        Relative,
+        Absolute
+    };
 
     const FCheckBoxStyle* RadioStyle()
     {
-        return &FAppStyle::Get().GetWidgetStyle<FCheckBoxStyle>(TEXT("RadioButton"));
+        static const FCheckBoxStyle RoleRadioStyle = []()
+        {
+            FCheckBoxStyle Style = FAppStyle::Get().GetWidgetStyle<FCheckBoxStyle>(TEXT("RadioButton"));
+
+            // Make an unselected Link role easier to see without introducing a custom graphic:
+            // the old hover appearance becomes the normal appearance, and hover becomes brighter.
+            Style.UncheckedImage = Style.UncheckedHoveredImage;
+            Style.UncheckedHoveredImage.TintColor = FSlateColor(FLinearColor::White);
+
+            return Style;
+        }();
+
+        return &RoleRadioStyle;
     }
 
-    const FCheckBoxStyle* PropertySegmentStyle(const FName StyleName)
+    const FSegmentedControlStyle& SegmentedStyle()
     {
-        return &FAppStyle::Get().GetWidgetStyle<FCheckBoxStyle>(StyleName);
+        return FAppStyle::Get().GetWidgetStyle<FSegmentedControlStyle>(TEXT("SegmentedControl"));
     }
 
-    const FButtonStyle* SimpleButtonStyle()
+    const FTextBlockStyle* SegmentTextStyle()
     {
-        return &FAppStyle::Get().GetWidgetStyle<FButtonStyle>(TEXT("SimpleButton"));
+        return &FAppStyle::Get().GetWidgetStyle<FTextBlockStyle>(TEXT("SmallButtonText"));
     }
 
-    const FComboButtonStyle* SimpleComboButtonStyle()
+    FSlateIcon SyncIcon()
     {
-        return &FAppStyle::Get().GetWidgetStyle<FComboButtonStyle>(TEXT("SimpleComboButton"));
+        return FSlateIcon(StyleSetName, TEXT("Link.Sync"));
     }
 
-    const FTextBlockStyle* SmallTextStyle()
+    FSlateIcon LinkOnIcon()
     {
-        return &FAppStyle::Get().GetWidgetStyle<FTextBlockStyle>(TEXT("SmallText"));
+        return FSlateIcon(StyleSetName, TEXT("Link.Enabled"));
+    }
+
+    FSlateIcon LinkOffIcon()
+    {
+        return FSlateIcon(StyleSetName, TEXT("Link.Disabled"));
+    }
+
+    FSlateIcon SettingsIcon()
+    {
+        return FSlateIcon(StyleSetName, TEXT("Link.Settings"));
     }
 }
 
 void FLinkModule::StartupModule()
 {
+    RegisterStyle();
+
     TickerHandle = FTSTicker::GetCoreTicker().AddTicker(
         FTickerDelegate::CreateRaw(this, &FLinkModule::TickLink));
 
@@ -82,11 +111,47 @@ void FLinkModule::ShutdownModule()
     }
 
     UToolMenus::UnRegisterStartupCallback(this);
+    UnregisterStyle();
     UToolMenus::UnregisterOwner(this);
 
     RegisteredViewports.Reset();
     TargetViewportKeys.Reset();
     SourceViewportKey = NAME_None;
+}
+
+void FLinkModule::RegisterStyle()
+{
+    if (StyleSet.IsValid())
+    {
+        return;
+    }
+
+    TSharedPtr<IPlugin> Plugin = IPluginManager::Get().FindPlugin(TEXT("Link"));
+    if (!Plugin.IsValid())
+    {
+        return;
+    }
+
+    StyleSet = MakeShared<FSlateStyleSet>(LinkUI::StyleSetName);
+    StyleSet->SetContentRoot(Plugin->GetBaseDir() / TEXT("Resources"));
+    StyleSet->Set(TEXT("Link.Sync"), new FSlateVectorImageBrush(StyleSet->RootToContentDir(TEXT("Link_Sync"), TEXT(".svg")), FVector2D(18.0f, 18.0f)));
+    StyleSet->Set(TEXT("Link.Enabled"), new FSlateVectorImageBrush(StyleSet->RootToContentDir(TEXT("Link_Off"), TEXT(".svg")), FVector2D(18.0f, 18.0f)));
+    StyleSet->Set(TEXT("Link.Disabled"), new FSlateVectorImageBrush(StyleSet->RootToContentDir(TEXT("Link_On"), TEXT(".svg")), FVector2D(18.0f, 18.0f)));
+    StyleSet->Set(TEXT("Link.Settings"), new FSlateVectorImageBrush(StyleSet->RootToContentDir(TEXT("Link_Settings"), TEXT(".svg")), FVector2D(18.0f, 18.0f)));
+
+    FSlateStyleRegistry::RegisterSlateStyle(*StyleSet);
+}
+
+void FLinkModule::UnregisterStyle()
+{
+    if (!StyleSet.IsValid())
+    {
+        return;
+    }
+
+    FSlateStyleRegistry::UnRegisterSlateStyle(*StyleSet);
+    ensure(StyleSet.IsUnique());
+    StyleSet.Reset();
 }
 
 void FLinkModule::RegisterMenus()
@@ -100,227 +165,209 @@ void FLinkModule::RegisterMenus()
     }
 
     FToolMenuSection& RightSection = ViewportToolbar->FindOrAddSection(TEXT("Right"));
-    FToolMenuEntry Entry = FToolMenuEntry::InitWidget(
-        TEXT("LinkViewportControl"),
-        SNullWidget::NullWidget,
-        LOCTEXT("LinkToolbarLabel", "Link"),
-        true,
-        false);
 
-    Entry.MakeCustomWidget = FNewToolMenuCustomWidget::CreateLambda(
-        [this](const FToolMenuContext& Context, const FToolMenuCustomWidgetContext&) -> TSharedRef<SWidget>
-        {
-            return MakeToolbarWidget(Context);
-        });
+    FToolMenuEntry LinkControls = FToolMenuEntry::InitDynamicEntry(
+        TEXT("LinkViewportControls"),
+        FNewToolMenuSectionDelegate::CreateRaw(this, &FLinkModule::BuildToolbarEntries));
 
-    // Match Lux's camera-area placement without depending on Lux itself.
-    Entry.InsertPosition = FToolMenuInsert(TEXT("Camera"), EToolMenuInsertType::Before);
-    RightSection.AddEntry(Entry);
+    // Keep Link beside the camera controls, but let the viewport toolbar itself own sizing and styling.
+    LinkControls.InsertPosition = FToolMenuInsert(TEXT("Camera"), EToolMenuInsertType::Before);
+    RightSection.AddEntry(LinkControls);
 }
 
-TSharedRef<SWidget> FLinkModule::MakeToolbarWidget(const FToolMenuContext& Context)
+void FLinkModule::BuildToolbarEntries(FToolMenuSection& Section)
 {
-    TSharedPtr<SLevelViewport> Viewport = ULevelViewportContext::GetLevelViewport(Context);
+    UUnrealEdViewportToolbarContext* ToolbarContext = Section.FindContext<UUnrealEdViewportToolbarContext>();
+    if (!ToolbarContext)
+    {
+        return;
+    }
+
+    TSharedPtr<SEditorViewport> EditorViewport = ToolbarContext->Viewport.Pin();
+    if (!EditorViewport.IsValid())
+    {
+        return;
+    }
+
+    // This extension only runs inside LevelEditor.ViewportToolbar, whose viewport is an SLevelViewport.
+    TSharedPtr<SLevelViewport> Viewport = StaticCastSharedPtr<SLevelViewport>(EditorViewport);
     if (!Viewport.IsValid())
     {
-        return SNullWidget::NullWidget;
+        return;
     }
 
     RegisterViewport(Viewport);
     const FName ViewportKey = GetViewportKey(Viewport);
-    const TWeakPtr<SLevelViewport> WeakViewport = Viewport;
+    if (ViewportKey.IsNone())
+    {
+        return;
+    }
 
-    return SNew(SHorizontalBox)
+    FToolMenuEntry& SyncEntry = Section.AddMenuEntry(
+        TEXT("Link.Sync"),
+        LOCTEXT("SyncButton", "Sync"),
+        LOCTEXT(
+            "SyncTooltip",
+            "Sync\nImmediately align all Link targets to the source viewport on the enabled position and rotation axes. This is a one-shot absolute sync and works independently of Relative or Absolute mode."),
+        LinkUI::SyncIcon(),
+        FUIAction(
+            FExecuteAction::CreateRaw(this, &FLinkModule::SyncTargets),
+            FCanExecuteAction::CreateRaw(this, &FLinkModule::CanSyncTargets)),
+        EUserInterfaceActionType::Button);
+    SyncEntry.ToolBarData.LabelOverride = FText::GetEmpty();
+    SyncEntry.ToolBarData.ResizeParams.ClippingPriority = 920;
 
-        // 1. One-shot absolute sync.
-        + SHorizontalBox::Slot()
-        .AutoWidth()
-        .VAlign(VAlign_Center)
-        [
-            SNew(SBox)
-            .HeightOverride(LinkUI::ToolbarButtonHeight)
+    FToolMenuEntry& LinkEntry = Section.AddMenuEntry(
+        TEXT("Link.Enabled"),
+        LOCTEXT("LinkButton", "Link"),
+        LOCTEXT(
+            "LinkToggleTooltip",
+            "Link\nEnable or suspend linked viewport camera movement. Disabling Link preserves the current source, targets, axis selections, and mode."),
+        LinkUI::LinkOffIcon(),
+        FUIAction(
+            FExecuteAction::CreateRaw(this, &FLinkModule::ToggleEnabled),
+            FCanExecuteAction(),
+            FIsActionChecked::CreateLambda([this]() { return bLinkEnabled; })),
+        EUserInterfaceActionType::ToggleButton);
+    LinkEntry.Icon = TAttribute<FSlateIcon>::CreateLambda([this]()
+    {
+        return bLinkEnabled ? LinkUI::LinkOnIcon() : LinkUI::LinkOffIcon();
+    });
+    LinkEntry.ToolBarData.LabelOverride = FText::GetEmpty();
+    LinkEntry.ToolBarData.ResizeParams.ClippingPriority = 930;
+
+    FToolMenuEntry RoleEntry = FToolMenuEntry::InitWidget(
+        TEXT("Link.Roles"),
+        MakeRoleWidget(ViewportKey),
+        FText::GetEmpty(),
+        true,
+        false);
+    RoleEntry.ToolBarData.ResizeParams.ClippingPriority = 940;
+    Section.AddEntry(RoleEntry);
+
+    FToolMenuEntry& SettingsEntry = Section.AddSubMenu(
+        TEXT("Link.Settings"),
+        LOCTEXT("SettingsButton", "Settings"),
+        LOCTEXT(
+            "SettingsTooltip",
+            "Settings\nConfigure linked position axes, rotation axes, synchronization mode, or clear the current Link setup."),
+        FNewToolMenuDelegate::CreateRaw(this, &FLinkModule::PopulateSettingsMenu),
+        false,
+        LinkUI::SettingsIcon());
+    SettingsEntry.ToolBarData.LabelOverride = FText::GetEmpty();
+    SettingsEntry.ToolBarData.ResizeParams.ClippingPriority = 950;
+    SettingsEntry.ToolBarData.PlacementOverride = MenuPlacement_BelowRightAnchor;
+}
+
+TSharedRef<SWidget> FLinkModule::MakeRoleWidget(FName ViewportKey)
+{
+    auto MakeRoleButton = [this, ViewportKey](bool bSource) -> TSharedRef<SWidget>
+    {
+        return SNew(SBox)
+            .WidthOverride(LinkUI::RoleColumnWidth)
+            .HeightOverride(LinkUI::RoleVisualSize)
+            .HAlign(HAlign_Center)
+            .VAlign(VAlign_Center)
             [
-                SNew(SButton)
-                .ButtonStyle(LinkUI::SimpleButtonStyle())
-                .ContentPadding(FMargin(LinkUI::ToolbarButtonPaddingX, 1.0f))
-                .IsEnabled_Lambda([this]() { return CanSyncTargets(); })
-                .ToolTipText(LOCTEXT(
-                    "SyncTooltip",
-                    "Immediately align all Link targets to the source viewport on the enabled position and rotation axes. This is a one-shot absolute sync and works independently of Relative or Absolute mode."))
-                .OnClicked_Lambda([this]()
-                {
-                    SyncTargets();
-                    return FReply::Handled();
-                })
-                [
-                    SNew(SHorizontalBox)
-                    + SHorizontalBox::Slot()
-                    .AutoWidth()
-                    .VAlign(VAlign_Center)
-                    [
-                        SNew(STextBlock)
-                        .Text(FText::FromString(TEXT("↺")))
-                    ]
-                    + SHorizontalBox::Slot()
-                    .AutoWidth()
-                    .VAlign(VAlign_Center)
-                    .Padding(4.0f, 0.0f, 0.0f, 0.0f)
-                    [
-                        SNew(STextBlock)
-                        .Text(LOCTEXT("SyncButton", "Sync"))
-                    ]
-                ]
-            ]
-        ]
-
-        + SHorizontalBox::Slot()
-        .AutoWidth()
-        .Padding(LinkUI::ToolbarGap, 0.0f)
-        .VAlign(VAlign_Center)
-        [
-            // 2. Global Link enable / suspend toggle.
-            SNew(SBox)
-            .HeightOverride(LinkUI::ToolbarButtonHeight)
-            [
-                SNew(SCheckBox)
-                .Style(LinkUI::ToggleStyle())
-                .Padding(FMargin(LinkUI::ToolbarButtonPaddingX, 1.0f))
-                .IsChecked_Lambda([this]()
-                {
-                    return bLinkEnabled ? ECheckBoxState::Checked : ECheckBoxState::Unchecked;
-                })
-                .OnCheckStateChanged_Lambda([this](ECheckBoxState)
-                {
-                    ToggleEnabled();
-                })
-                .ToolTipText(LOCTEXT(
-                    "LinkToggleTooltip",
-                    "Enable or suspend linked viewport camera movement. Disabling Link preserves the current source, targets, axis selections, and mode."))
-                [
-                    SNew(STextBlock)
-                    .Text(LOCTEXT("LinkButton", "Link"))
-                ]
-            ]
-        ]
-
-        + SHorizontalBox::Slot()
-        .AutoWidth()
-        .Padding(0.0f, 0.0f, LinkUI::ToolbarGap, 0.0f)
-        .VAlign(VAlign_Center)
-        [
-            // 3 / 4. Compact stacked Source and Target radial controls.
-            SNew(SBorder)
-            .Padding(FMargin(2.0f, 1.0f))
-            .BorderImage(FAppStyle::GetBrush(TEXT("SimpleButton")))
-            [
-                SNew(SBox)
-                .WidthOverride(LinkUI::RoleColumnWidth)
-                .HeightOverride(LinkUI::ToolbarButtonHeight - 2.0f)
-                [
-                    SNew(SVerticalBox)
-                + SVerticalBox::Slot()
-                .AutoHeight()
-                .HAlign(HAlign_Center)
-                .VAlign(VAlign_Center)
+                SNew(SScaleBox)
+                .Stretch(EStretch::ScaleToFit)
+                .StretchDirection(EStretchDirection::DownOnly)
                 [
                     SNew(SCheckBox)
                     .Style(LinkUI::RadioStyle())
                     .Padding(FMargin(0.0f))
-                    .IsChecked_Lambda([this, ViewportKey]()
+                    .IsChecked_Lambda([this, ViewportKey, bSource]()
                     {
-                        return IsSource(ViewportKey) ? ECheckBoxState::Checked : ECheckBoxState::Unchecked;
+                        const bool bChecked = bSource ? IsSource(ViewportKey) : IsTarget(ViewportKey);
+                        return bChecked ? ECheckBoxState::Checked : ECheckBoxState::Unchecked;
                     })
-                    .OnCheckStateChanged_Lambda([this, ViewportKey](ECheckBoxState)
+                    .OnCheckStateChanged_Lambda([this, ViewportKey, bSource](ECheckBoxState)
                     {
-                        ToggleSource(ViewportKey);
+                        if (bSource)
+                        {
+                            ToggleSource(ViewportKey);
+                        }
+                        else
+                        {
+                            ToggleTarget(ViewportKey);
+                        }
                     })
-                    .ToolTipText(LOCTEXT(
-                        "SourceRoleTooltip",
-                        "Make this viewport the Link source. Only one Level Editor viewport can be the source at a time. Choosing a new source automatically clears the previous source."))
+                    .ToolTipText(bSource
+                        ? LOCTEXT(
+                            "SourceRoleTooltip",
+                            "Make this viewport the Link source. Only one Level Editor viewport can be the source at a time. Choosing a new source automatically clears the previous source.")
+                        : LOCTEXT(
+                            "TargetRoleTooltip",
+                            "Make this viewport a Link target. Any number of viewports can be targets, but the source viewport cannot also be a target."))
                 ]
-                + SVerticalBox::Slot()
-                .AutoHeight()
-                .HAlign(HAlign_Center)
-                .VAlign(VAlign_Center)
-                [
-                    SNew(SCheckBox)
-                    .Style(LinkUI::RadioStyle())
-                    .Padding(FMargin(0.0f))
-                    .IsChecked_Lambda([this, ViewportKey]()
-                    {
-                        return IsTarget(ViewportKey) ? ECheckBoxState::Checked : ECheckBoxState::Unchecked;
-                    })
-                    .OnCheckStateChanged_Lambda([this, ViewportKey](ECheckBoxState)
-                    {
-                        ToggleTarget(ViewportKey);
-                    })
-                    .ToolTipText(LOCTEXT(
-                        "TargetRoleTooltip",
-                        "Make this viewport a Link target. Any number of viewports can be targets, but the source viewport cannot also be a target."))
-                ]
-                ]
-            ]
-        ]
+            ];
+    };
 
-        // 5. Settings popup.
-        + SHorizontalBox::Slot()
-        .AutoWidth()
+    return SNew(SBox)
+        .Padding(FMargin(2.0f, 0.0f))
         .VAlign(VAlign_Center)
         [
-            SNew(SBox)
-            .HeightOverride(LinkUI::ToolbarButtonHeight)
+            SNew(SVerticalBox)
+            + SVerticalBox::Slot()
+            .AutoHeight()
             [
-                SNew(SComboButton)
-                .ComboButtonStyle(LinkUI::SimpleComboButtonStyle())
-                .HasDownArrow(false)
-                .ContentPadding(FMargin(LinkUI::ToolbarButtonPaddingX, 1.0f))
-                .ToolTipText(LOCTEXT(
-                    "SettingsTooltip",
-                    "Configure linked position axes, rotation axes, synchronization mode, or clear the current Link setup."))
-                .OnGetMenuContent_Lambda([this, WeakViewport]()
-                {
-                    return BuildSettingsPopup(WeakViewport);
-                })
-                .ButtonContent()
-                [
-                    SNew(SHorizontalBox)
-                    + SHorizontalBox::Slot()
-                    .AutoWidth()
-                    .VAlign(VAlign_Center)
-                    [
-                        SNew(STextBlock)
-                        .Text(FText::FromString(TEXT("⚙")))
-                    ]
-                    + SHorizontalBox::Slot()
-                    .AutoWidth()
-                    .VAlign(VAlign_Center)
-                    .Padding(4.0f, 0.0f, 0.0f, 0.0f)
-                    [
-                        SNew(STextBlock)
-                        .Text(LOCTEXT("SettingsButton", "Settings"))
-                    ]
-                ]
+                MakeRoleButton(true)
+            ]
+            + SVerticalBox::Slot()
+            .AutoHeight()
+            .Padding(0.0f, LinkUI::RoleButtonGap, 0.0f, 0.0f)
+            [
+                MakeRoleButton(false)
             ]
         ];
 }
 
-TSharedRef<SWidget> FLinkModule::BuildSettingsPopup(TWeakPtr<SLevelViewport> WeakViewport)
+void FLinkModule::PopulateSettingsMenu(UToolMenu* Menu)
 {
-    const TSharedPtr<SLevelViewport> Viewport = WeakViewport.Pin();
-    if (Viewport.IsValid())
+    if (!Menu)
     {
-        RegisterViewport(Viewport);
+        return;
     }
 
-    auto MakeToggleSegment = [](const FText& Label, const FText& Tooltip, bool* ValuePtr, float Width, const FName StyleName) -> TSharedRef<SWidget>
+    auto WrapMenuContent = [](const TSharedRef<SWidget>& Content) -> TSharedRef<SWidget>
     {
-        return SNew(SBox)
-            .WidthOverride(Width)
-            .HeightOverride(LinkUI::SegmentHeight)
+        return SNew(SBorder)
+            .BorderImage(FStyleDefaults::GetNoBrush())
+            .Padding(FMargin(LinkUI::SettingsContentHorizontalPadding, 0.0f))
+            [
+                Content
+            ];
+    };
+
+    auto MakeAxisSegments = [](bool* AValue, bool* BValue, bool* CValue,
+                               const FText& ALabel, const FText& BLabel, const FText& CLabel,
+                               const FText& ATooltip, const FText& BTooltip, const FText& CTooltip) -> TSharedRef<SWidget>
+    {
+        const FSegmentedControlStyle& Style = LinkUI::SegmentedStyle();
+        FMargin SlotPadding = Style.UniformPadding;
+        SlotPadding.Right = 0.0f;
+
+        TSharedRef<SUniformGridPanel> Grid = SNew(SUniformGridPanel).SlotPadding(SlotPadding);
+
+        auto AddSegment = [&Grid, &Style](int32 Column, bool* ValuePtr, const FText& Label, const FText& Tooltip)
+        {
+            const FCheckBoxStyle* CheckStyle = &Style.ControlStyle;
+            if (Column == 0)
+            {
+                CheckStyle = &Style.FirstControlStyle;
+            }
+            else if (Column == 2)
+            {
+                CheckStyle = &Style.LastControlStyle;
+            }
+
+            Grid->AddSlot(Column, 0)
             [
                 SNew(SCheckBox)
-                .Style(LinkUI::PropertySegmentStyle(StyleName))
-                .Padding(FMargin(8.0f, 2.0f))
+                .Clipping(EWidgetClipping::ClipToBounds)
+                .HAlign(HAlign_Center)
+                .Style(CheckStyle)
+                .Padding(Style.UniformPadding)
                 .IsChecked_Lambda([ValuePtr]()
                 {
                     return *ValuePtr ? ECheckBoxState::Checked : ECheckBoxState::Unchecked;
@@ -331,260 +378,135 @@ TSharedRef<SWidget> FLinkModule::BuildSettingsPopup(TWeakPtr<SLevelViewport> Wea
                 })
                 .ToolTipText(Tooltip)
                 [
-                    SNew(SBox)
-                    .HAlign(HAlign_Center)
-                    .VAlign(VAlign_Center)
-                    [
-                        SNew(STextBlock)
-                        .Justification(ETextJustify::Center)
-                        .Text(Label)
-                    ]
+                    SNew(STextBlock)
+                    .TextStyle(LinkUI::SegmentTextStyle())
+                    .Text(Label)
+                ]
+            ];
+        };
+
+        AddSegment(0, AValue, ALabel, ATooltip);
+        AddSegment(1, BValue, BLabel, BTooltip);
+        AddSegment(2, CValue, CLabel, CTooltip);
+
+        return SNew(SBox)
+            .WidthOverride(LinkUI::SettingsRowWidth)
+            [
+                SNew(SBorder)
+                .BorderImage(&Style.BackgroundBrush)
+                .Padding(FMargin(0.0f, 0.0f, Style.UniformPadding.Right, 0.0f))
+                [
+                    Grid
                 ]
             ];
     };
 
-    auto MakeSegmentGroup = [](const TSharedRef<SWidget>& A, const TSharedRef<SWidget>& B, const TSharedRef<SWidget>& C) -> TSharedRef<SWidget>
-    {
-        return SNew(SBorder)
-            .Padding(FMargin(1.0f))
-            .BorderImage(FAppStyle::GetBrush(TEXT("ToolPanel.GroupBorder")))
-            [
-                SNew(SHorizontalBox)
-                + SHorizontalBox::Slot().AutoWidth()[A]
-                + SHorizontalBox::Slot().AutoWidth()[B]
-                + SHorizontalBox::Slot().AutoWidth()[C]
-            ];
-    };
-
-    const TSharedRef<SWidget> PositionSegments = MakeSegmentGroup(
-        MakeToggleSegment(
-            LOCTEXT("PositionX", "X"),
-            LOCTEXT("PositionXTooltip", "Include the X position axis when synchronizing Link targets."),
+    FToolMenuSection& LocationSection = Menu->AddSection(
+        TEXT("Link.Location"),
+        LOCTEXT("LocationSection", "Location"));
+    LocationSection.AddEntry(FToolMenuEntry::InitWidget(
+        TEXT("Link.LocationAxes"),
+        WrapMenuContent(MakeAxisSegments(
             &bLinkPositionX,
-            LinkUI::SegmentWidthShort,
-            TEXT("Property.ToggleButton.Start")),
-        MakeToggleSegment(
-            LOCTEXT("PositionY", "Y"),
-            LOCTEXT("PositionYTooltip", "Include the Y position axis when synchronizing Link targets."),
             &bLinkPositionY,
-            LinkUI::SegmentWidthShort,
-            TEXT("Property.ToggleButton.Middle")),
-        MakeToggleSegment(
-            LOCTEXT("PositionZ", "Z"),
-            LOCTEXT("PositionZTooltip", "Include the Z position axis when synchronizing Link targets."),
             &bLinkPositionZ,
-            LinkUI::SegmentWidthShort,
-            TEXT("Property.ToggleButton.End")));
+            LOCTEXT("PositionX", "X"),
+            LOCTEXT("PositionY", "Y"),
+            LOCTEXT("PositionZ", "Z"),
+            LOCTEXT("PositionXTooltip", "Include the X position axis when synchronizing Link targets."),
+            LOCTEXT("PositionYTooltip", "Include the Y position axis when synchronizing Link targets."),
+            LOCTEXT("PositionZTooltip", "Include the Z position axis when synchronizing Link targets."))),
+        FText::GetEmpty(),
+        true,
+        false));
 
-    const TSharedRef<SWidget> RotationSegments = MakeSegmentGroup(
-        MakeToggleSegment(
-            LOCTEXT("Pitch", "Pitch"),
-            LOCTEXT("PitchTooltip", "Include Pitch when synchronizing rotation to perspective Link targets."),
+    FToolMenuSection& RotationSection = Menu->AddSection(
+        TEXT("Link.Rotation"),
+        LOCTEXT("RotationSection", "Rotation"));
+    RotationSection.AddEntry(FToolMenuEntry::InitWidget(
+        TEXT("Link.RotationAxes"),
+        WrapMenuContent(MakeAxisSegments(
             &bLinkPitch,
-            LinkUI::SegmentWidthShort,
-            TEXT("Property.ToggleButton.Start")),
-        MakeToggleSegment(
-            LOCTEXT("Yaw", "Yaw"),
-            LOCTEXT("YawTooltip", "Include Yaw when synchronizing rotation to perspective Link targets."),
             &bLinkYaw,
-            LinkUI::SegmentWidthShort,
-            TEXT("Property.ToggleButton.Middle")),
-        MakeToggleSegment(
-            LOCTEXT("Roll", "Roll"),
-            LOCTEXT("RollTooltip", "Include Roll when synchronizing rotation to perspective Link targets."),
             &bLinkRoll,
-            LinkUI::SegmentWidthShort,
-            TEXT("Property.ToggleButton.End")));
+            LOCTEXT("Pitch", "Pitch"),
+            LOCTEXT("Yaw", "Yaw"),
+            LOCTEXT("Roll", "Roll"),
+            LOCTEXT("PitchTooltip", "Include Pitch when synchronizing rotation to perspective Link targets."),
+            LOCTEXT("YawTooltip", "Include Yaw when synchronizing rotation to perspective Link targets."),
+            LOCTEXT("RollTooltip", "Include Roll when synchronizing rotation to perspective Link targets."))),
+        FText::GetEmpty(),
+        true,
+        false));
 
-    const TSharedRef<SWidget> RelativeSegment =
+    TSharedRef<SSegmentedControl<LinkUI::ELinkMode>> ModeControl =
+        SNew(SSegmentedControl<LinkUI::ELinkMode>)
+        .Value_Lambda([this]()
+        {
+            return bAbsoluteMode ? LinkUI::ELinkMode::Absolute : LinkUI::ELinkMode::Relative;
+        })
+        .OnValueChanged_Lambda([this](LinkUI::ELinkMode NewMode)
+        {
+            SetAbsoluteMode(NewMode == LinkUI::ELinkMode::Absolute);
+        });
+
+    ModeControl->AddSlot(LinkUI::ELinkMode::Relative, false)
+        .Text(LOCTEXT("RelativeMode", "Relative"))
+        .ToolTip(LOCTEXT(
+            "RelativeModeTooltip",
+            "Targets follow source camera movement deltas while preserving each target's existing position and rotation offsets."));
+
+    ModeControl->AddSlot(LinkUI::ELinkMode::Absolute, false)
+        .Text(LOCTEXT("AbsoluteMode", "Absolute"))
+        .ToolTip(LOCTEXT(
+            "AbsoluteModeTooltip",
+            "Targets continuously match the source on the enabled axes whenever the source camera changes. Disabled axes remain independent."));
+
+    ModeControl->RebuildChildren();
+
+    TSharedRef<SWidget> ModeRow =
         SNew(SBox)
-        .WidthOverride(LinkUI::SegmentWidthLong)
-        .HeightOverride(LinkUI::SegmentHeight)
-        [
-            SNew(SCheckBox)
-            .Style(LinkUI::PropertySegmentStyle(TEXT("Property.ToggleButton.Start")))
-            .Padding(FMargin(8.0f, 2.0f))
-            .IsChecked_Lambda([this]()
-            {
-                return !bAbsoluteMode ? ECheckBoxState::Checked : ECheckBoxState::Unchecked;
-            })
-            .OnCheckStateChanged_Lambda([this](ECheckBoxState NewState)
-            {
-                if (NewState == ECheckBoxState::Checked)
-                {
-                    SetAbsoluteMode(false);
-                }
-            })
-            .ToolTipText(LOCTEXT(
-                "RelativeModeTooltip",
-                "Relative mode applies source camera movement deltas to targets while preserving each target's existing position and rotation offsets."))
-            [
-                SNew(SBox)
-                .HAlign(HAlign_Center)
-                .VAlign(VAlign_Center)
-                [
-                    SNew(STextBlock)
-                    .Justification(ETextJustify::Center)
-                    .Text(LOCTEXT("RelativeMode", "Relative"))
-                ]
-            ]
-        ];
-
-    const TSharedRef<SWidget> AbsoluteSegment =
-        SNew(SBox)
-        .WidthOverride(LinkUI::SegmentWidthLong)
-        .HeightOverride(LinkUI::SegmentHeight)
-        [
-            SNew(SCheckBox)
-            .Style(LinkUI::PropertySegmentStyle(TEXT("Property.ToggleButton.End")))
-            .Padding(FMargin(8.0f, 2.0f))
-            .IsChecked_Lambda([this]()
-            {
-                return bAbsoluteMode ? ECheckBoxState::Checked : ECheckBoxState::Unchecked;
-            })
-            .OnCheckStateChanged_Lambda([this](ECheckBoxState NewState)
-            {
-                if (NewState == ECheckBoxState::Checked)
-                {
-                    SetAbsoluteMode(true);
-                }
-            })
-            .ToolTipText(LOCTEXT(
-                "AbsoluteModeTooltip",
-                "Absolute mode makes targets match the source on the enabled axes whenever the source camera changes. Disabled axes remain independent."))
-            [
-                SNew(SBox)
-                .HAlign(HAlign_Center)
-                .VAlign(VAlign_Center)
-                [
-                    SNew(STextBlock)
-                    .Justification(ETextJustify::Center)
-                    .Text(LOCTEXT("AbsoluteMode", "Absolute"))
-                ]
-            ]
-        ];
-
-    const TSharedRef<SWidget> ModeSegments =
-        SNew(SBorder)
-        .Padding(FMargin(1.0f))
-        .BorderImage(FAppStyle::GetBrush(TEXT("ToolPanel.GroupBorder")))
+        .WidthOverride(LinkUI::SettingsRowWidth)
         [
             SNew(SHorizontalBox)
-            + SHorizontalBox::Slot().AutoWidth()[RelativeSegment]
-            + SHorizontalBox::Slot().AutoWidth()[AbsoluteSegment]
-        ];
-
-    return SNew(SBox)
-        .WidthOverride(LinkUI::PopupWidth)
-        [
-            SNew(SBorder)
-            .Padding(FMargin(10.0f, 9.0f))
-            .BorderImage(FAppStyle::GetBrush(TEXT("Menu.Background")))
+            + SHorizontalBox::Slot()
+            .FillWidth(1.0f)
+            .VAlign(VAlign_Center)
             [
-                SNew(SVerticalBox)
-
-                + SVerticalBox::Slot()
-                .AutoHeight()
-                .Padding(0.0f, 0.0f, 0.0f, 4.0f)
+                ModeControl
+            ]
+            + SHorizontalBox::Slot()
+            .AutoWidth()
+            .Padding(8.0f, 0.0f, 0.0f, 0.0f)
+            .VAlign(VAlign_Bottom)
+            [
+                SNew(SButton)
+                .ContentPadding(FMargin(10.0f, 2.5f))
+                .ToolTipText(LOCTEXT(
+                    "ClearTooltip",
+                    "Clear the current Link source and targets, disable Link, and restore the default axis and mode settings. Viewport cameras are not moved."))
+                .OnClicked_Lambda([this]()
+                {
+                    ClearLinkSetup();
+                    return FReply::Handled();
+                })
                 [
                     SNew(STextBlock)
-                    .TextStyle(LinkUI::SmallTextStyle())
-                    .ColorAndOpacity(FSlateColor::UseSubduedForeground())
-                    .Text(LOCTEXT("LocationSection", "Location"))
-                ]
-
-                + SVerticalBox::Slot()
-                .AutoHeight()
-                .Padding(0.0f, 0.0f, 0.0f, 8.0f)
-                [
-                    PositionSegments
-                ]
-
-                + SVerticalBox::Slot()
-                .AutoHeight()
-                .Padding(0.0f, 0.0f, 0.0f, 8.0f)
-                [
-                    SNew(SSeparator)
-                    .Orientation(Orient_Horizontal)
-                ]
-
-                + SVerticalBox::Slot()
-                .AutoHeight()
-                .Padding(0.0f, 0.0f, 0.0f, 4.0f)
-                [
-                    SNew(STextBlock)
-                    .TextStyle(LinkUI::SmallTextStyle())
-                    .ColorAndOpacity(FSlateColor::UseSubduedForeground())
-                    .Text(LOCTEXT("RotationSection", "Rotation"))
-                ]
-
-                + SVerticalBox::Slot()
-                .AutoHeight()
-                .Padding(0.0f, 0.0f, 0.0f, 8.0f)
-                [
-                    RotationSegments
-                ]
-
-                + SVerticalBox::Slot()
-                .AutoHeight()
-                .Padding(0.0f, 0.0f, 0.0f, 8.0f)
-                [
-                    SNew(SSeparator)
-                    .Orientation(Orient_Horizontal)
-                ]
-
-                + SVerticalBox::Slot()
-                .AutoHeight()
-                .Padding(0.0f, 0.0f, 0.0f, 4.0f)
-                [
-                    SNew(STextBlock)
-                    .TextStyle(LinkUI::SmallTextStyle())
-                    .ColorAndOpacity(FSlateColor::UseSubduedForeground())
-                    .Text(LOCTEXT("ModeSection", "Mode"))
-                ]
-
-                + SVerticalBox::Slot()
-                .AutoHeight()
-                [
-                    SNew(SHorizontalBox)
-                    + SHorizontalBox::Slot()
-                    .AutoWidth()
-                    [
-                        ModeSegments
-                    ]
-                    + SHorizontalBox::Slot()
-                    .FillWidth(1.0f)
-                    [
-                        SNullWidget::NullWidget
-                    ]
-                    + SHorizontalBox::Slot()
-                    .AutoWidth()
-                    .Padding(8.0f, 0.0f, 0.0f, 0.0f)
-                    .VAlign(VAlign_Center)
-                    [
-                        SNew(SBox)
-                        .HeightOverride(LinkUI::SegmentHeight)
-                        [
-                            SNew(SButton)
-                            .ButtonStyle(LinkUI::SimpleButtonStyle())
-                            .ContentPadding(FMargin(10.0f, 2.0f))
-                            .ToolTipText(LOCTEXT(
-                                "ClearTooltip",
-                                "Clear the current Link source and targets, disable Link, and restore the default axis and mode settings. Viewport cameras are not moved."))
-                            .OnClicked_Lambda([this]()
-                            {
-                                ClearLinkSetup();
-                                return FReply::Handled();
-                            })
-                            [
-                                SNew(STextBlock)
-                                .Text(LOCTEXT("ClearButton", "Clear"))
-                            ]
-                        ]
-                    ]
+                    .TextStyle(LinkUI::SegmentTextStyle())
+                    .Text(LOCTEXT("ClearButton", "Clear"))
                 ]
             ]
         ];
+
+    FToolMenuSection& ModeSection = Menu->AddSection(
+        TEXT("Link.Mode"),
+        LOCTEXT("ModeSection", "Mode"));
+    ModeSection.AddEntry(FToolMenuEntry::InitWidget(
+        TEXT("Link.ModeRow"),
+        WrapMenuContent(ModeRow),
+        FText::GetEmpty(),
+        true,
+        false));
 }
 
 void FLinkModule::RegisterViewport(const TSharedPtr<SLevelViewport>& Viewport)
