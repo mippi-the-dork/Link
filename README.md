@@ -6,7 +6,7 @@ Link adds camera synchronization controls directly to the Level Editor viewport 
 
 Use **Relative** mode to preserve existing camera offsets, **Absolute** mode to continuously match selected transform axes, or **Sync** for an immediate one-shot alignment.
 
-![Unreal Engine](https://img.shields.io/badge/Unreal%20Engine-5.8.3-black?logo=unrealengine)
+![Unreal Engine](https://img.shields.io/badge/Unreal%20Engine-5.8.x-black?logo=unrealengine)
 ![Platform](https://img.shields.io/badge/Platform-Windows%2064--bit-blue)
 ![Type](https://img.shields.io/badge/Plugin-Editor%20Only-green)
 ![Version](https://img.shields.io/badge/Version-1.0.0-blue)
