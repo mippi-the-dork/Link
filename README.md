@@ -12,38 +12,7 @@ Use **Relative** mode to preserve existing camera offsets, **Absolute** mode to 
 ![Version](https://img.shields.io/badge/Version-1.0.0-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-<!--
-> [!IMPORTANT]
-> **ATTENTION - README AUTHOR**
->
-> Capture the primary hero image for Link here.
->
-> **Recommended visual:** Screenshot
->
-> Use a multi-viewport Level Editor layout with at least three visible viewports.
->
-> Show:
->
-> - One Perspective viewport configured as the **Source**
-> - At least two viewports configured as **Targets**
-> - Link enabled
-> - The Link toolbar controls clearly visible
-> - The Settings menu open in one viewport
->
-> Ideally use different viewing angles so it is obvious that the viewports are coordinated without all being identical.
->
-> A four-viewport layout works particularly well because the feature can be understood immediately from a single image.
->
-> **Suggested file:**
->
-> `Doc/Images/Link-Hero.png`
->
-> Once captured, replace this callout with:
->
-> ```markdown
-> ![Link synchronizing multiple Unreal Engine Level Editor viewports](Doc/Images/Link-Hero.png)
-> ```
--->
+![Link synchronizing multiple Unreal Engine Level Editor viewports](Doc/Images/Link-Hero.png)
 ---
 
 ## What is Link?
