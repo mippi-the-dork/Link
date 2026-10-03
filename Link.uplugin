@@ -6,6 +6,7 @@
 	"Description": "Synchronizes Level Editor viewport cameras with one-shot sync, relative or absolute linking, and independent position and rotation axis controls.",
 	"Category": "Editor",
 	"CreatedBy": "Mippithedork",
+	"EngineVersion": "5.8.0",
 	"CanContainContent": false,
 	"IsBetaVersion": false,
 	"IsExperimentalVersion": false,
