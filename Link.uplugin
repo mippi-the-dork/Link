@@ -4,7 +4,7 @@
 	"VersionName": "1.0.0",
 	"FriendlyName": "Link",
 	"Description": "Synchronizes Level Editor viewport cameras with one-shot sync, relative or absolute linking, and independent position and rotation axis controls.",
-	"Category": "Editor",
+	"Category": "Viewport",
 	"CreatedBy": "Mippithedork",
 	"EngineVersion": "5.8.0",
 	"CanContainContent": false,
