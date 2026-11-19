@@ -1,0 +1,286 @@
+{
+  "placeholder": "assets/media-placeholder.png",
+  "format_note": "Image targets are static captures/diagrams; GIF targets are animated demonstrations. Both currently show the supplied neutral placeholder PNG.",
+  "slots": [
+    {
+      "page": "01-getting-started/overview/DESIGN.md",
+      "id": "overview-viewports",
+      "heading": "The problem Link solves",
+      "kind": "image",
+      "alt": "Link Source and Target viewports within Unreal Engine's Level Editor",
+      "caption": "Link coordinates several Level Editor cameras while retaining an independent viewing position in each Target.",
+      "capture_instructions": "Capture Unreal's four-viewport layout with one Perspective Source and two visibly different Targets, with the Link toolbar controls and Source/Target selections legible.",
+      "final_asset": "assets/media/overview-viewports.png"
+    },
+    {
+      "page": "01-getting-started/overview/TECHNICAL.md",
+      "id": "overview-architecture",
+      "heading": "Editor integration",
+      "kind": "image",
+      "alt": "Diagram of Link toolbar integration and camera synchronization",
+      "caption": "Link's Editor module connects the Level Editor viewport toolbar to in-memory role state and native viewport camera updates.",
+      "capture_instructions": "Create a diagram showing FLinkModule, LevelEditor.ViewportToolbar, the Source/Target key registry, the core ticker and Target viewport clients; distinguish UI and camera data.",
+      "final_asset": "assets/media/overview-architecture.png"
+    },
+    {
+      "page": "01-getting-started/installation/DESIGN.md",
+      "id": "installation-files",
+      "heading": "Install from a packaged release",
+      "kind": "image",
+      "alt": "Correctly installed Link plugin folder inside a project",
+      "caption": "The Link plugin belongs directly under a project's Plugins directory, with its descriptor and resources available to Unreal Editor.",
+      "capture_instructions": "Show File Explorer at YourProject/Plugins/Link with Link.uplugin, Source, Resources and Config visible and the address bar showing the correct folder nesting.",
+      "final_asset": "assets/media/installation-files.png"
+    },
+    {
+      "page": "01-getting-started/first-session/DESIGN.md",
+      "id": "first-session",
+      "heading": "Your first linked navigation",
+      "kind": "gif",
+      "alt": "Two Level Editor viewports linking for the first time",
+      "caption": "Assigning a Perspective Source and a Target allows the Target camera to follow later movement without losing its chosen offset.",
+      "capture_instructions": "Record a 10–15-second Unreal Editor sequence with two viewports: select upper Source radio in Perspective 1, lower Target radio in Perspective 2, enable Link, then move Source and show Target following.",
+      "final_asset": "assets/media/first-session.gif"
+    },
+    {
+      "page": "02-linking-controls/toolbar/DESIGN.md",
+      "id": "toolbar-controls",
+      "heading": "Where the controls live",
+      "kind": "image",
+      "alt": "Link's Sync, Link, Source, Target and Settings toolbar controls",
+      "caption": "All Link controls appear together in each Level Editor viewport toolbar near the native camera tools.",
+      "capture_instructions": "Capture a close-up of one viewport toolbar and label Sync, Link, upper Source selector, lower Target selector and Settings. Include enough of the viewport to establish location.",
+      "final_asset": "assets/media/toolbar-controls.png"
+    },
+    {
+      "page": "02-linking-controls/toolbar/TECHNICAL.md",
+      "id": "toolbar-registration",
+      "heading": "Entry construction",
+      "kind": "image",
+      "alt": "Diagram of the native Link toolbar entry construction",
+      "caption": "The Link toolbar is created through Unreal ToolMenus and uses the current Level Editor viewport context.",
+      "capture_instructions": "Create an annotated call-flow diagram from RegisterMenus to BuildToolbarEntries, showing LevelEditor.ViewportToolbar context, Sync/Link actions, role widget and Settings submenu.",
+      "final_asset": "assets/media/toolbar-registration.png"
+    },
+    {
+      "page": "02-linking-controls/roles/DESIGN.md",
+      "id": "role-source",
+      "heading": "Choose a Source",
+      "kind": "image",
+      "alt": "Perspective Source viewport with the upper Link role selected",
+      "caption": "The upper selector identifies the one viewport that drives the configured Targets.",
+      "capture_instructions": "Capture at least two viewports with the upper Source selector visibly active on Perspective 1 and inactive on Perspective 2. Keep both viewport labels visible.",
+      "final_asset": "assets/media/role-source.png"
+    },
+    {
+      "page": "02-linking-controls/roles/DESIGN.md",
+      "id": "role-targets",
+      "heading": "Choose Targets",
+      "kind": "gif",
+      "alt": "Assigning several Target viewports from individual toolbars",
+      "caption": "Link allows multiple Targets but keeps the Source and Target roles mutually exclusive.",
+      "capture_instructions": "Record a sequence assigning two Targets to one Source, selecting a new Source, and showing how the old Source selection is replaced; keep each viewport toolbar visible.",
+      "final_asset": "assets/media/role-targets.gif"
+    },
+    {
+      "page": "02-linking-controls/relative/DESIGN.md",
+      "id": "relative-follow",
+      "heading": "Example: preserve distance",
+      "kind": "gif",
+      "alt": "Relative camera linking preserving an initial Target offset",
+      "caption": "Relative mode applies the Source's movement delta to Targets while keeping each Target's position and viewing offset.",
+      "capture_instructions": "Record two perspective viewports initially at distinct positions, enable Relative with X/Y/Z on, move the Source forward and sideways, and show Target following without snapping to Source.",
+      "final_asset": "assets/media/relative-follow.gif"
+    },
+    {
+      "page": "02-linking-controls/relative/TECHNICAL.md",
+      "id": "relative-delta-diagram",
+      "heading": "Per-tick delta model",
+      "kind": "image",
+      "alt": "Diagram of Source camera delta applied to a Target camera",
+      "caption": "Relative movement adds Source translation and rotation deltas independently to each valid Target's enabled axes.",
+      "capture_instructions": "Create a concise diagram using example Source X 0→100 and Target X 500→600, plus separate yaw 0→30 and 90→120; mark these as independent axis calculations.",
+      "final_asset": "assets/media/relative-delta-diagram.png"
+    },
+    {
+      "page": "02-linking-controls/absolute/DESIGN.md",
+      "id": "absolute-horizontal",
+      "heading": "Example: preserve height",
+      "kind": "gif",
+      "alt": "Absolute X/Y linking while retaining a different Target height",
+      "caption": "Absolute mode matches enabled Source coordinates while leaving disabled Target axes independent.",
+      "capture_instructions": "Record two perspectives with visibly different heights, show Settings X/Y on Z off in Absolute, then move Source horizontally and show Target matching X/Y while keeping its own Z.",
+      "final_asset": "assets/media/absolute-horizontal.gif"
+    },
+    {
+      "page": "02-linking-controls/absolute/TECHNICAL.md",
+      "id": "absolute-trigger",
+      "heading": "Change-triggered absolute writes",
+      "kind": "image",
+      "alt": "Flow diagram showing how Absolute updates are triggered by Source changes",
+      "caption": "Absolute position and rotation are applied only after a corresponding Source movement is detected.",
+      "capture_instructions": "Diagram Source sample → position delta/rotation delta decisions → axis-mask checks → assign current Source values to Target; note mode/axis changes alone don't trigger immediate writes.",
+      "final_asset": "assets/media/absolute-trigger.png"
+    },
+    {
+      "page": "02-linking-controls/sync/DESIGN.md",
+      "id": "sync-offset",
+      "heading": "Align, then establish a new offset",
+      "kind": "gif",
+      "alt": "One-Shot Sync aligning cameras before a Relative offset is set",
+      "caption": "Sync provides an immediate alignment, after which a Target can be repositioned for continued Relative linking.",
+      "capture_instructions": "Record two perspective viewports: click Sync to align enabled axes, manually move Target to a distinct view, then enable Relative Link and move Source to demonstrate the retained offset.",
+      "final_asset": "assets/media/sync-offset.gif"
+    },
+    {
+      "page": "02-linking-controls/axes/DESIGN.md",
+      "id": "axis-settings",
+      "heading": "Open Link Settings",
+      "kind": "image",
+      "alt": "Complete Link Settings menu displaying axes, modes and Clear",
+      "caption": "The Settings menu provides independent X/Y/Z and Pitch/Yaw/Roll controls alongside Relative/Absolute mode and Clear.",
+      "capture_instructions": "Capture the full expanded Settings menu with Location X/Y/Z, Rotation Pitch/Yaw/Roll, Relative/Absolute selector and Clear, plus the toolbar anchor.",
+      "final_asset": "assets/media/axis-settings.png"
+    },
+    {
+      "page": "02-linking-controls/axes/TECHNICAL.md",
+      "id": "axis-ui-diagram",
+      "heading": "Native settings menu",
+      "kind": "image",
+      "alt": "Native Slate components used to construct Link's Settings menu",
+      "caption": "Link uses ToolMenus sections, segmented axis checkboxes and a Relative/Absolute selector to edit shared session state.",
+      "capture_instructions": "Create a compact diagram of Location, Rotation and Mode sections with their native Slate types and field names; emphasize that checking a box updates state rather than moving the camera immediately.",
+      "final_asset": "assets/media/axis-ui-diagram.png"
+    },
+    {
+      "page": "02-linking-controls/orthographic/DESIGN.md",
+      "id": "orthographic-follow",
+      "heading": "Set it up",
+      "kind": "gif",
+      "alt": "Perspective Source guiding Top and Front orthographic views",
+      "caption": "Orthographic Targets follow selected Source position changes without rotating their fixed projections or changing zoom.",
+      "capture_instructions": "Record Perspective, Top and Front viewports together: show Source/Target roles, enable Relative X/Y/Z, navigate Perspective through the level and keep both orthographic camera views visible.",
+      "final_asset": "assets/media/orthographic-follow.gif"
+    },
+    {
+      "page": "02-linking-controls/orthographic/TECHNICAL.md",
+      "id": "orthographic-boundary",
+      "heading": "Projection checks",
+      "kind": "image",
+      "alt": "Diagram of Perspective Source eligibility and orthographic Target limitations",
+      "caption": "Link requires a Perspective Source, but orthographic Targets can still receive position updates.",
+      "capture_instructions": "Draw a capability diagram with Perspective Source → Perspective Target (position and rotation) and → Top/Front Target (position only), marking zoom and orthographic rotation as unsupported.",
+      "final_asset": "assets/media/orthographic-boundary.png"
+    },
+    {
+      "page": "03-workflows-and-behavior/workflows/DESIGN.md",
+      "id": "side-view-workflow",
+      "heading": "Maintain a side view while navigating",
+      "kind": "gif",
+      "alt": "Multi-viewport navigation retaining a useful independent side perspective",
+      "caption": "A second Perspective camera can follow the Source's translation while maintaining its original viewing direction.",
+      "capture_instructions": "Record a main Perspective viewport moving down a corridor while a side-angle Perspective Target follows at its initial offset; keep the complete layout visible.",
+      "final_asset": "assets/media/side-view-workflow.gif"
+    },
+    {
+      "page": "03-workflows-and-behavior/workflows/DESIGN.md",
+      "id": "reference-workflow",
+      "heading": "Keep Top and Front reference views with you",
+      "kind": "image",
+      "alt": "Multi-viewport layout with a Perspective Source and two orthographic references",
+      "caption": "Perspective, Top and Front viewports can track the same working area while showing different projections.",
+      "capture_instructions": "Capture a three- or four-viewport layout with Source and both Targets labeled, framing the same area in Perspective, Top and Front with visibly different zoom/orientation.",
+      "final_asset": "assets/media/reference-workflow.png"
+    },
+    {
+      "page": "03-workflows-and-behavior/safety/DESIGN.md",
+      "id": "camera-locks",
+      "heading": "Camera locks take priority",
+      "kind": "image",
+      "alt": "Locked viewport excluded from Link Target synchronization",
+      "caption": "A camera-locked Target is skipped while other unlocked Targets can continue receiving Source movement.",
+      "capture_instructions": "Capture one Perspective Source, one Target visibly locked to an Actor/cinematic camera, and a second unlocked Target, with Lock indicators and role selectors clearly identifiable.",
+      "final_asset": "assets/media/camera-locks.png"
+    },
+    {
+      "page": "03-workflows-and-behavior/safety/DESIGN.md",
+      "id": "pie-suspend",
+      "heading": "Play In Editor",
+      "kind": "gif",
+      "alt": "Link pausing synchronization during Play In Editor",
+      "caption": "Link suspends when PIE begins and resumes future editor navigation from a fresh Source sample.",
+      "capture_instructions": "Record a viewport layout with Link enabled, enter PIE, move the game camera without the editor Target being driven, then exit PIE and demonstrate normal Source following resuming.",
+      "final_asset": "assets/media/pie-suspend.gif"
+    },
+    {
+      "page": "03-workflows-and-behavior/session/DESIGN.md",
+      "id": "session-clear",
+      "heading": "Clear returns to defaults",
+      "kind": "gif",
+      "alt": "Link Settings Clear restoring the default Source, Target and axis configuration",
+      "caption": "Clear removes Link's session roles and restores default settings without moving existing cameras.",
+      "capture_instructions": "Record a linked setup with altered axes and Absolute mode, open Settings → Clear, then show Link off, no Source/Targets, X/Y/Z on, rotation off and Relative selected, with cameras stationary.",
+      "final_asset": "assets/media/session-clear.gif"
+    },
+    {
+      "page": "04-technical-implementation/architecture/TECHNICAL.md",
+      "id": "native-toolmenus",
+      "heading": "Native toolbar extension",
+      "kind": "image",
+      "alt": "Architecture of the Link ToolMenus and Slate viewport integration",
+      "caption": "Link registers native ToolMenus entries and tracks viewport widgets by configuration identity.",
+      "capture_instructions": "Create a labeled diagram showing RegisterMenus → BuildToolbarEntries → SLevelViewport/GetConfigKey → RegisteredViewports; include Source and Target key collections and native Slate icon/style registration.",
+      "final_asset": "assets/media/native-toolmenus.png"
+    },
+    {
+      "page": "04-technical-implementation/algorithm/TECHNICAL.md",
+      "id": "sync-loop",
+      "heading": "Tick and early-outs",
+      "kind": "image",
+      "alt": "Camera synchronization loop with eligibility and baseline checks",
+      "caption": "Link updates eligible Target cameras only after Source movement is detected and all required editor guards pass.",
+      "capture_instructions": "Draw a flowchart: Tick → Link enabled, PIE, Perspective Source, locks → baseline present → delta checks → per-Target eligibility → Relative/Absolute axis writes → Invalidate.",
+      "final_asset": "assets/media/sync-loop.png"
+    },
+    {
+      "page": "05-support-and-troubleshooting/faq/DESIGN.md",
+      "id": "faq-mode-compare",
+      "heading": "Modes and controls",
+      "kind": "image",
+      "alt": "Comparison of Relative and Absolute linking with the same initial camera offsets",
+      "caption": "Relative preserves a Target's offset while Absolute aligns the enabled coordinates after Source movement.",
+      "capture_instructions": "Use a side-by-side comparison with matching two-viewport framing and clear Relative/Absolute labels, showing Target offset preserved versus enabled-axis position matched.",
+      "final_asset": "assets/media/faq-mode-compare.png"
+    },
+    {
+      "page": "05-support-and-troubleshooting/troubleshooting/DESIGN.md",
+      "id": "troubleshoot-sync",
+      "heading": "Sync button is disabled",
+      "kind": "image",
+      "alt": "Link Sync disabled because Source/Target prerequisites are not met",
+      "caption": "The Sync control requires a valid Perspective Source, at least one Target and an eligible editor state.",
+      "capture_instructions": "Capture a viewport toolbar where Sync is disabled, alongside a clearly identifiable missing Source or Target role; provide an adjacent corrected state showing Sync available.",
+      "final_asset": "assets/media/troubleshoot-sync.png"
+    },
+    {
+      "page": "05-support-and-troubleshooting/updating/DESIGN.md",
+      "id": "update-folder",
+      "heading": "Installing a newer precompiled release",
+      "kind": "image",
+      "alt": "Link plugin correctly installed in a project's Plugins folder",
+      "caption": "A complete compatible plugin folder replaces the previous Link installation when the Unreal Editor is closed.",
+      "capture_instructions": "Show the YourProject/Plugins/Link directory with Link.uplugin and Resources/Source contents visible; include a release version label if supplied by the package.",
+      "final_asset": "assets/media/update-folder.png"
+    },
+    {
+      "page": "ROADMAP.md",
+      "id": "roadmap-v1",
+      "heading": "Shipped — v1.0.0",
+      "kind": "image",
+      "alt": "Link v1.0.0 feature overview showing synchronized editor viewports",
+      "caption": "Link's first release provides Relative, Absolute and one-shot Sync workflows through native Unreal viewport toolbar controls.",
+      "capture_instructions": "Create a clean static feature overview with a central Perspective Source linked to several Targets and labels for Relative, Absolute, Sync, axis filters and orthographic support. Do not depict unapproved future features.",
+      "final_asset": "assets/media/roadmap-v1.png"
+    }
+  ]
+}
