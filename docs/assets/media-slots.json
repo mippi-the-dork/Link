@@ -195,7 +195,7 @@
     {
       "page": "03-workflows-and-behavior/safety/DESIGN.md",
       "id": "camera-locks",
-      "heading": "Camera locks take priority",
+      "heading": "Native camera locks come first",
       "kind": "image",
       "alt": "Locked viewport excluded from Link Target synchronization",
       "caption": "A camera-locked Target is skipped while other unlocked Targets can continue receiving Source movement.",
