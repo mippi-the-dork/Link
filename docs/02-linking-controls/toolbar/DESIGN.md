@@ -4,6 +4,12 @@
 
 ## Where the controls live
 
+<figure class="doc-media" data-kind="image" data-media-id="toolbar-controls">
+  <img src="../../assets/media-placeholder.png" alt="Link's Sync, Link, Source, Target and Settings toolbar controls" loading="lazy">
+  <figcaption>All Link controls appear together in each Level Editor viewport toolbar near the native camera tools.<span class="media-capture-instructions"><strong>Capture instructions · Image:</strong> Capture a close-up of one viewport toolbar and label Sync, Link, upper Source selector, lower Target selector and Settings. Include enough of the viewport to establish location.</span></figcaption>
+</figure>
+
+
 Link is integrated into the **Level Editor viewport toolbar**, beside Unreal Engine's standard camera controls. Each Level Editor viewport has access to the same setup and role controls.
 
 | Control | What it does |

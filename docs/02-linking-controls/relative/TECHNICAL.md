@@ -4,6 +4,12 @@
 
 ## Per-tick delta model
 
+<figure class="doc-media" data-kind="image" data-media-id="relative-delta-diagram">
+  <img src="../../assets/media-placeholder.png" alt="Diagram of Source camera delta applied to a Target camera" loading="lazy">
+  <figcaption>Relative movement adds Source translation and rotation deltas independently to each valid Target's enabled axes.<span class="media-capture-instructions"><strong>Capture instructions · Image:</strong> Create a concise diagram using example Source X 0→100 and Target X 500→600, plus separate yaw 0→30 and 90→120; mark these as independent axis calculations.</span></figcaption>
+</figure>
+
+
 In `FLinkModule::TickLink`, the Source camera is sampled after eligibility checks:
 
 ```cpp

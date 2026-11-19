@@ -12,6 +12,12 @@ If Link is off, moving the Source does not move Targets. Turning Link on capture
 
 ## Clear returns to defaults
 
+<figure class="doc-media" data-kind="gif" data-media-id="session-clear">
+  <img src="../../assets/media-placeholder.png" alt="Link Settings Clear restoring the default Source, Target and axis configuration" loading="lazy">
+  <figcaption>Clear removes Link's session roles and restores default settings without moving existing cameras.<span class="media-capture-instructions"><strong>Capture instructions · GIF:</strong> Record a linked setup with altered axes and Absolute mode, open Settings → Clear, then show Link off, no Source/Targets, X/Y/Z on, rotation off and Relative selected, with cameras stationary.</span></figcaption>
+</figure>
+
+
 | Setting | After Settings → Clear |
 | --- | --- |
 | Continuous Link | Off |

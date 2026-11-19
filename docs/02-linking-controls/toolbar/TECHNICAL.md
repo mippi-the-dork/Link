@@ -8,6 +8,12 @@
 
 ## Entry construction
 
+<figure class="doc-media" data-kind="image" data-media-id="toolbar-registration">
+  <img src="../../assets/media-placeholder.png" alt="Diagram of the native Link toolbar entry construction" loading="lazy">
+  <figcaption>The Link toolbar is created through Unreal ToolMenus and uses the current Level Editor viewport context.<span class="media-capture-instructions"><strong>Capture instructions · Image:</strong> Create an annotated call-flow diagram from RegisterMenus to BuildToolbarEntries, showing LevelEditor.ViewportToolbar context, Sync/Link actions, role widget and Settings submenu.</span></figcaption>
+</figure>
+
+
 `BuildToolbarEntries` requires a valid `UUnrealEdViewportToolbarContext` and `SLevelViewport`. It registers the viewport by its configuration key and creates:
 
 | Entry | Native implementation |

@@ -12,6 +12,12 @@ A valid Perspective Source, at least one configured Target, no active PIE sessio
 
 ## Align, then establish a new offset
 
+<figure class="doc-media" data-kind="gif" data-media-id="sync-offset">
+  <img src="../../assets/media-placeholder.png" alt="One-Shot Sync aligning cameras before a Relative offset is set" loading="lazy">
+  <figcaption>Sync provides an immediate alignment, after which a Target can be repositioned for continued Relative linking.<span class="media-capture-instructions"><strong>Capture instructions · GIF:</strong> Record two perspective viewports: click Sync to align enabled axes, manually move Target to a distinct view, then enable Relative Link and move Source to demonstrate the retained offset.</span></figcaption>
+</figure>
+
+
 1. Assign Source and Target viewports.
 2. Enable X/Y/Z, and optionally rotation for Perspective Targets.
 3. Press **Sync** to align.

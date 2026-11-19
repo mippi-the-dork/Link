@@ -8,6 +8,12 @@
 
 ## Example: preserve distance
 
+<figure class="doc-media" data-kind="gif" data-media-id="relative-follow">
+  <img src="../../assets/media-placeholder.png" alt="Relative camera linking preserving an initial Target offset" loading="lazy">
+  <figcaption>Relative mode applies the Source's movement delta to Targets while keeping each Target's position and viewing offset.<span class="media-capture-instructions"><strong>Capture instructions · GIF:</strong> Record two perspective viewports initially at distinct positions, enable Relative with X/Y/Z on, move the Source forward and sideways, and show Target following without snapping to Source.</span></figcaption>
+</figure>
+
+
 | Camera | Before Source moves | After Source X moves +100 |
 | --- | ---: | ---: |
 | Source X | 0 | 100 |

@@ -4,6 +4,12 @@
 
 ## Projection checks
 
+<figure class="doc-media" data-kind="image" data-media-id="orthographic-boundary">
+  <img src="../../assets/media-placeholder.png" alt="Diagram of Perspective Source eligibility and orthographic Target limitations" loading="lazy">
+  <figcaption>Link requires a Perspective Source, but orthographic Targets can still receive position updates.<span class="media-capture-instructions"><strong>Capture instructions · Image:</strong> Draw a capability diagram with Perspective Source → Perspective Target (position and rotation) and → Top/Front Target (position only), marking zoom and orthographic rotation as unsupported.</span></figcaption>
+</figure>
+
+
 `CanSyncTargets` and `TickLink` require the Source client type to be `LVT_Perspective`. The Source role selector can store another viewport key; the type requirement is enforced during operation, not assignment.
 
 ## Target behavior
