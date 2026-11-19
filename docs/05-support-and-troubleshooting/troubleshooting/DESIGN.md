@@ -8,6 +8,12 @@ Open **Edit → Plugins** and confirm Link is enabled. Restart Unreal if the plu
 
 ## Sync button is disabled
 
+<figure class="doc-media" data-kind="image" data-media-id="troubleshoot-sync">
+  <img src="../../assets/media-placeholder.png" alt="Link Sync disabled because Source/Target prerequisites are not met" loading="lazy">
+  <figcaption>The Sync control requires a valid Perspective Source, at least one Target and an eligible editor state.<span class="media-capture-instructions"><strong>Capture instructions · Image:</strong> Capture a viewport toolbar where Sync is disabled, alongside a clearly identifiable missing Source or Target role; provide an adjacent corrected state showing Sync available.</span></figcaption>
+</figure>
+
+
 Check that a Perspective Source and at least one Target are assigned, PIE isn't active, and Source is not Actor- or cinematic-camera-locked. Target camera locks are checked separately during Sync.
 
 ## Link is enabled but Targets don't move

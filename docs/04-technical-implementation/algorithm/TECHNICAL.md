@@ -4,6 +4,12 @@
 
 ## Tick and early-outs
 
+<figure class="doc-media" data-kind="image" data-media-id="sync-loop">
+  <img src="../../assets/media-placeholder.png" alt="Camera synchronization loop with eligibility and baseline checks" loading="lazy">
+  <figcaption>Link updates eligible Target cameras only after Source movement is detected and all required editor guards pass.<span class="media-capture-instructions"><strong>Capture instructions · Image:</strong> Draw a flowchart: Tick → Link enabled, PIE, Perspective Source, locks → baseline present → delta checks → per-Target eligibility → Relative/Absolute axis writes → Invalidate.</span></figcaption>
+</figure>
+
+
 `TickLink` runs through `FTSTicker`, skips recursive application, prunes invalid viewport references and returns early if Link isn't enabled, Source absent, Targets empty, PIE active or Source invalid, orthographic or locked.
 
 ## Baseline sampling

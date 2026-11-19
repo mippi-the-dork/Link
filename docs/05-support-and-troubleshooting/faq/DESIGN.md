@@ -12,6 +12,12 @@
 
 ## Modes and controls
 
+<figure class="doc-media" data-kind="image" data-media-id="faq-mode-compare">
+  <img src="../../assets/media-placeholder.png" alt="Comparison of Relative and Absolute linking with the same initial camera offsets" loading="lazy">
+  <figcaption>Relative preserves a Target's offset while Absolute aligns the enabled coordinates after Source movement.<span class="media-capture-instructions"><strong>Capture instructions · Image:</strong> Use a side-by-side comparison with matching two-viewport framing and clear Relative/Absolute labels, showing Target offset preserved versus enabled-axis position matched.</span></figcaption>
+</figure>
+
+
 **What's the difference between Relative and Absolute?** Relative adds Source movement deltas and preserves each Target's existing offset. Absolute matches the enabled Source coordinates when the Source changes.
 
 **Why didn't choosing Absolute move anything?** A mode change doesn't reposition Targets. Move the Source again, or press Sync for immediate alignment.

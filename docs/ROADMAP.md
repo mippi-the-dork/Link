@@ -5,6 +5,12 @@
 
 ## Shipped — v1.0.0
 
+<figure class="doc-media" data-kind="image" data-media-id="roadmap-v1">
+  <img src="assets/media-placeholder.png" alt="Link v1.0.0 feature overview showing synchronized editor viewports" loading="lazy">
+  <figcaption>Link's first release provides Relative, Absolute and one-shot Sync workflows through native Unreal viewport toolbar controls.<span class="media-capture-instructions"><strong>Capture instructions · Image:</strong> Create a clean static feature overview with a central Perspective Source linked to several Targets and labels for Relative, Absolute, Sync, axis filters and orthographic support. Do not depict unapproved future features.</span></figcaption>
+</figure>
+
+
 Link's initial release establishes coordinated Level Editor viewport navigation with a single Perspective Source and multiple Targets. It includes:
 
 - Continuous **Relative** following that preserves Target position/rotation offsets on the enabled axes.

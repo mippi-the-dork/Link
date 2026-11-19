@@ -4,6 +4,12 @@
 
 ## Installing a newer precompiled release
 
+<figure class="doc-media" data-kind="image" data-media-id="update-folder">
+  <img src="../../assets/media-placeholder.png" alt="Link plugin correctly installed in a project's Plugins folder" loading="lazy">
+  <figcaption>A complete compatible plugin folder replaces the previous Link installation when the Unreal Editor is closed.<span class="media-capture-instructions"><strong>Capture instructions · Image:</strong> Show the YourProject/Plugins/Link directory with Link.uplugin and Resources/Source contents visible; include a release version label if supplied by the package.</span></figcaption>
+</figure>
+
+
 1. Close Unreal Editor.
 2. Download a release package matching your engine and platform from [Link Releases](https://github.com/mippi-the-dork/Link/releases), if one is published.
 3. Replace the **entire** `YourProject/Plugins/Link` folder, rather than overlaying old files.

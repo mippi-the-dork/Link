@@ -8,6 +8,12 @@
 
 ## Native toolbar extension
 
+<figure class="doc-media" data-kind="image" data-media-id="native-toolmenus">
+  <img src="../../assets/media-placeholder.png" alt="Architecture of the Link ToolMenus and Slate viewport integration" loading="lazy">
+  <figcaption>Link registers native ToolMenus entries and tracks viewport widgets by configuration identity.<span class="media-capture-instructions"><strong>Capture instructions · Image:</strong> Create a labeled diagram showing RegisterMenus → BuildToolbarEntries → SLevelViewport/GetConfigKey → RegisteredViewports; include Source and Target key collections and native Slate icon/style registration.</span></figcaption>
+</figure>
+
+
 `RegisterMenus` extends `LevelEditor.ViewportToolbar`, Right section, before Camera using a dynamic ToolMenus entry. `BuildToolbarEntries` finds `UUnrealEdViewportToolbarContext` and `SLevelViewport`, then creates native Sync and Link entries, a role widget and a Settings submenu.
 
 ## Slate controls
