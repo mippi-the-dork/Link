@@ -4,6 +4,12 @@
 
 ## The problem Link solves
 
+<figure class="doc-media" data-kind="image" data-media-id="overview-viewports">
+  <img src="../../assets/media-placeholder.png" alt="Link Source and Target viewports within Unreal Engine's Level Editor" loading="lazy">
+  <figcaption>Link coordinates several Level Editor cameras while retaining an independent viewing position in each Target.<span class="media-capture-instructions"><strong>Capture instructions · Image:</strong> Capture Unreal's four-viewport layout with one Perspective Source and two visibly different Targets, with the Link toolbar controls and Source/Target selections legible.</span></figcaption>
+</figure>
+
+
 Unreal Engine can display several Level Editor viewports at once, but normally each camera must be navigated independently. Link allows you to designate a **Source** and make other **Target** viewports follow its movement. This is useful when you want a main working camera alongside a side perspective, a Top view, or a Front reference.
 
 ## What you can do

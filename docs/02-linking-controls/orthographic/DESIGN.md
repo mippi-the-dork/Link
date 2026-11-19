@@ -8,6 +8,12 @@ Top, Front and Side **orthographic viewports can be Targets** for a Perspective 
 
 ## Set it up
 
+<figure class="doc-media" data-kind="gif" data-media-id="orthographic-follow">
+  <img src="../../assets/media-placeholder.png" alt="Perspective Source guiding Top and Front orthographic views" loading="lazy">
+  <figcaption>Orthographic Targets follow selected Source position changes without rotating their fixed projections or changing zoom.<span class="media-capture-instructions"><strong>Capture instructions · GIF:</strong> Record Perspective, Top and Front viewports together: show Source/Target roles, enable Relative X/Y/Z, navigate Perspective through the level and keep both orthographic camera views visible.</span></figcaption>
+</figure>
+
+
 1. Select a Perspective + Top + Front Level Editor layout.
 2. Mark Perspective **Source** and both orthographic views **Targets**.
 3. Use Relative mode with X/Y/Z enabled and turn on Link.

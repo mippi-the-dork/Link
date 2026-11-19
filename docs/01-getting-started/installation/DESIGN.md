@@ -8,6 +8,12 @@ Link **v1.0.0** is an **Unreal Engine 5.8 / Win64 Editor plugin**. The README li
 
 ## Install from a packaged release
 
+<figure class="doc-media" data-kind="image" data-media-id="installation-files">
+  <img src="../../assets/media-placeholder.png" alt="Correctly installed Link plugin folder inside a project" loading="lazy">
+  <figcaption>The Link plugin belongs directly under a project's Plugins directory, with its descriptor and resources available to Unreal Editor.<span class="media-capture-instructions"><strong>Capture instructions · Image:</strong> Show File Explorer at YourProject/Plugins/Link with Link.uplugin, Source, Resources and Config visible and the address bar showing the correct folder nesting.</span></figcaption>
+</figure>
+
+
 1. Close Unreal Editor.
 2. Open [Link Releases](https://github.com/mippi-the-dork/Link/releases) and obtain a compatible precompiled package if one is published.
 3. Extract it so `Link.uplugin` is directly inside `YourProject/Plugins/Link/`.

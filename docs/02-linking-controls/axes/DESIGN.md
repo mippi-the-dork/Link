@@ -4,6 +4,12 @@
 
 ## Open Link Settings
 
+<figure class="doc-media" data-kind="image" data-media-id="axis-settings">
+  <img src="../../assets/media-placeholder.png" alt="Complete Link Settings menu displaying axes, modes and Clear" loading="lazy">
+  <figcaption>The Settings menu provides independent X/Y/Z and Pitch/Yaw/Roll controls alongside Relative/Absolute mode and Clear.<span class="media-capture-instructions"><strong>Capture instructions · Image:</strong> Capture the full expanded Settings menu with Location X/Y/Z, Rotation Pitch/Yaw/Roll, Relative/Absolute selector and Clear, plus the toolbar anchor.</span></figcaption>
+</figure>
+
+
 In any Level Editor viewport toolbar, choose **Settings**. The chosen flags are shared across all Targets.
 
 ## Position

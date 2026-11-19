@@ -4,6 +4,12 @@
 
 ## Native settings menu
 
+<figure class="doc-media" data-kind="image" data-media-id="axis-ui-diagram">
+  <img src="../../assets/media-placeholder.png" alt="Native Slate components used to construct Link's Settings menu" loading="lazy">
+  <figcaption>Link uses ToolMenus sections, segmented axis checkboxes and a Relative/Absolute selector to edit shared session state.<span class="media-capture-instructions"><strong>Capture instructions · Image:</strong> Create a compact diagram of Location, Rotation and Mode sections with their native Slate types and field names; emphasize that checking a box updates state rather than moving the camera immediately.</span></figcaption>
+</figure>
+
+
 `PopulateSettingsMenu` creates Location, Rotation and Mode ToolMenus sections. Position and rotation use segmented native `SCheckBox` controls in a `SUniformGridPanel`, styled with `FAppStyle`; the UI row has a 244-pixel width.
 
 ## Fields

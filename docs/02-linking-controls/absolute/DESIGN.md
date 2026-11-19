@@ -8,6 +8,12 @@
 
 ## Example: preserve height
 
+<figure class="doc-media" data-kind="gif" data-media-id="absolute-horizontal">
+  <img src="../../assets/media-placeholder.png" alt="Absolute X/Y linking while retaining a different Target height" loading="lazy">
+  <figcaption>Absolute mode matches enabled Source coordinates while leaving disabled Target axes independent.<span class="media-capture-instructions"><strong>Capture instructions · GIF:</strong> Record two perspectives with visibly different heights, show Settings X/Y on Z off in Absolute, then move Source horizontally and show Target matching X/Y while keeping its own Z.</span></figcaption>
+</figure>
+
+
 With X and Y enabled and Z disabled, moving the Source makes each Target match Source X/Y while retaining its own Z. This is useful when comparing stacked spaces without losing horizontal alignment.
 
 ## How to use it

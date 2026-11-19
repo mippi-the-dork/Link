@@ -8,6 +8,12 @@
 
 ## Editor integration
 
+<figure class="doc-media" data-kind="image" data-media-id="overview-architecture">
+  <img src="../../assets/media-placeholder.png" alt="Diagram of Link toolbar integration and camera synchronization" loading="lazy">
+  <figcaption>Link's Editor module connects the Level Editor viewport toolbar to in-memory role state and native viewport camera updates.<span class="media-capture-instructions"><strong>Capture instructions · Image:</strong> Create a diagram showing FLinkModule, LevelEditor.ViewportToolbar, the Source/Target key registry, the core ticker and Target viewport clients; distinguish UI and camera data.</span></figcaption>
+</figure>
+
+
 `FLinkModule` registers a native ToolMenus dynamic entry in `LevelEditor.ViewportToolbar`. It adds Sync, Link, two per-viewport role selectors, and Settings in the toolbar's Right section before the camera controls. It registers a Slate style containing vector icons from `Resources/`.
 
 ## State ownership

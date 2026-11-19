@@ -8,6 +8,12 @@ Open a Level Editor layout with **two or more viewports**, ideally one Perspecti
 
 ## Your first linked navigation
 
+<figure class="doc-media" data-kind="gif" data-media-id="first-session">
+  <img src="../../assets/media-placeholder.png" alt="Two Level Editor viewports linking for the first time" loading="lazy">
+  <figcaption>Assigning a Perspective Source and a Target allows the Target camera to follow later movement without losing its chosen offset.<span class="media-capture-instructions"><strong>Capture instructions · GIF:</strong> Record a 10–15-second Unreal Editor sequence with two viewports: select upper Source radio in Perspective 1, lower Target radio in Perspective 2, enable Link, then move Source and show Target following.</span></figcaption>
+</figure>
+
+
 1. In the first **Perspective** viewport, click the **upper** role selector to make it the **Source**.
 2. In a second viewport, click the **lower** role selector to make it a **Target**.
 3. Leave the default **Relative** mode. X, Y and Z are enabled by default, while Pitch, Yaw and Roll start disabled.

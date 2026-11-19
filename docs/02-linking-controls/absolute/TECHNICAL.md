@@ -4,6 +4,12 @@
 
 ## Change-triggered absolute writes
 
+<figure class="doc-media" data-kind="image" data-media-id="absolute-trigger">
+  <img src="../../assets/media-placeholder.png" alt="Flow diagram showing how Absolute updates are triggered by Source changes" loading="lazy">
+  <figcaption>Absolute position and rotation are applied only after a corresponding Source movement is detected.<span class="media-capture-instructions"><strong>Capture instructions · Image:</strong> Diagram Source sample → position delta/rotation delta decisions → axis-mask checks → assign current Source values to Target; note mode/axis changes alone don't trigger immediate writes.</span></figcaption>
+</figure>
+
+
 `FLinkModule::TickLink` computes Source translation/rotation deltas before updating any Target. When `bAbsoluteMode=true`, a nonzero Source position delta causes enabled Target position coordinates to be assigned to the corresponding current Source values. A nonzero rotation delta similarly assigns enabled Pitch/Yaw/Roll fields, but only on Perspective Targets.
 
 ## Why choosing Absolute alone is inert
