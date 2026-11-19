@@ -152,6 +152,12 @@
 
     pages.push({title:'Roadmap',path:'ROADMAP.md',kind:'Document',summary:'Shipped Link 1.0 and carefully scoped future considerations',search:'roadmap history future link improvements'});
     pages.push({title:'Media Capture Inventory',path:'MEDIA_INVENTORY.md',kind:'Document',summary:'Images and GIF demonstrations requested for Link documentation',search:'media capture gif screenshot documentation'});
+    pages.push({title:'Verification Matrix',path:'VERIFICATION_MATRIX.md',kind:'Document',
+      summary:'Editor and browser QA scenarios with explicit execution status',
+      search:'verification tests qa link perspective source locked viewport pie relative sync'});
+    pages.push({title:'Documentation Audit',path:'DOCUMENTATION_AUDIT.md',kind:'Document',
+      summary:'Source review, coverage and documented remaining gaps',
+      search:'documentation audit improvements gaps quality media browser'});
     state.pages=pages;
     state.byPath=new Map(pages.map(p=>[p.path,p]));
   }
@@ -160,7 +166,8 @@
     const out=[];
     out.push('<a class="nav-home" data-page="'+esc(state.manifest.home)+'" href="'+pageUrl(state.manifest.home)+'">⌂ Documentation Home</a>');
     out.push('<a class="ref-link" data-page="ROADMAP.md" href="'+pageUrl('ROADMAP.md')+'">Roadmap · Releases & Future</a>');
-    out.push('<div class="nav-label">CURRENT VERSION · '+esc((state.manifest.baseline||'v1.0.0').replace('Focus ','').toUpperCase())+'</div>');
+    out.push('<a class="ref-link" data-page="MEDIA_INVENTORY.md" href="'+pageUrl('MEDIA_INVENTORY.md')+'">Media Capture Inventory</a>');
+    out.push('<div class="nav-label">CURRENT VERSION · '+esc((state.manifest.baseline||'v1.0.0').replace('Link ','').toUpperCase())+'</div>');
     
     
     
@@ -252,7 +259,7 @@
     });
 
     // Images in Markdown are resolved relative to the Markdown source file,
-    // rather than the site's query-driven /Focus/ page URL. External images
+    // rather than the site's query-driven /Link/ page URL. External images
     // are left unchanged; this also keeps GitHub's Markdown preview correct.
     els.article.querySelectorAll('img[src]').forEach(img=>{
       const raw=img.getAttribute('src')||'';
@@ -510,7 +517,7 @@
       const r=await fetch('site-manifest.json',{cache:'no-cache'});
       if(!r.ok)throw new Error('Could not load documentation manifest.');
       state.manifest=await r.json();
-      const currentVersion=String(state.manifest.baseline||'Focus v2.1.0').match(/v\d+\.\d+(?:\.\d+)?/)?.[0]||'v2.1.0';
+      const currentVersion=String(state.manifest.baseline||'Link v1.0.0').match(/v\d+\.\d+(?:\.\d+)?/)?.[0]||'v1.0.0';
       if(els.version) els.version.textContent=currentVersion+' DOCUMENTED';
       await loadStructure();
       buildPages();
